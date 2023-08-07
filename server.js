@@ -10,16 +10,17 @@ var cors = require('cors')
 const corsOptions = require("./config/corsOptions")
 const connectDb=require("./config/dbConn")
 const mongoose=require("mongoose")
-//const verifyJwt = require("./middleware/verifyJwt")
 
 
 connectDb()
 app.use(logger)
 
-app.use(express.urlencoded({extended:true}))
+app.use(cors(corsOptions))
 app.use(express.json())
 app.use(cookieParser())
-app.use(cors(/* corsOptions */))
+app.use(express.urlencoded({extended:true}))
+
+
 app.use(express.static(path.join(__dirname,"public")))
 
 
@@ -53,9 +54,9 @@ app.use(errorHandler)
 
 mongoose.connection.once("open",()=>{
     console.log("Db conneted");
-    app.listen(PORT,"localhost",(err)=>{
+    app.listen(PORT,(err)=>{
         if(err)console.log(err);
-        else console.log(`server is running on localhost with ${PORT}`);
+        else console.log(`server is running on PORT ${PORT}`);
     })
 })
 
