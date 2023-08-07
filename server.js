@@ -10,7 +10,7 @@ var cors = require('cors')
 const corsOptions = require("./config/corsOptions")
 const connectDb=require("./config/dbConn")
 const mongoose=require("mongoose")
-const verifyJwt = require("./middleware/verifyJwt")
+//const verifyJwt = require("./middleware/verifyJwt")
 
 
 connectDb()
@@ -19,7 +19,7 @@ app.use(logger)
 app.use(express.urlencoded({extended:true}))
 app.use(express.json())
 app.use(cookieParser())
-app.use(cors(corsOptions))
+app.use(cors(/* corsOptions */))
 app.use(express.static(path.join(__dirname,"public")))
 
 
