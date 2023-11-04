@@ -45,7 +45,6 @@ const refresh = async (req, res) => {
     if (!cookies?.jwt) {
       return res.status(401).json({ message: 'Unauthorized' });
     }
-  
     const refreshToken = cookies.jwt;
   
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN, async (err, decoded) => {
@@ -64,7 +63,7 @@ const refresh = async (req, res) => {
           userInfo: { username: foundUser.username, roles: foundUser.roles },
         },
         process.env.ACCESS_TOKEN,
-        { expiresIn: '15m' }
+        { expiresIn: '10m' }
       );
   
       return res.json({ accessToken });

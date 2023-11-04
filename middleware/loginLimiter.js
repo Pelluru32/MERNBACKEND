@@ -3,7 +3,7 @@ const {logEvents}= require("./logger")
 
 
 const loginLimiter = rateLimit({
-	windowMs: 60 * 1000, // 1 hour
+	windowMs: 60 * 1000, // 1 minute
 	max: 5, // Limit each IP to 5 create account requests per `window` (here, per hour)
 	message:
 		{message:'Too many accounts created from this IP, please try again after an one minute'},

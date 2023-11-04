@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const Note = require("../models/Note");
 const bcrypt = require("bcrypt");
+const { default: mongoose } = require("mongoose");
 
 const getAllUsers = (req, res) => {
     User.find()
@@ -12,7 +13,7 @@ const getAllUsers = (req, res) => {
             }
         })
         .catch((err) => {
-            res.status(400).json({ message: "No users found" });
+            res.status(500).json({ message: "Error occurred while fetching users" })
         });
 };
 
@@ -42,6 +43,7 @@ const createNewUser = (req, res) => {
 
 const updateUser = (req, res) => {
     const { id, username, active, password, roles } = req.body;
+    
     if (!username || !roles.length || !Array.isArray(roles) || !id || typeof active !== "boolean") {
         res.status(400).json({ message: "All fields are required except password*" });
     }
@@ -53,9 +55,9 @@ const updateUser = (req, res) => {
                     hashpwd = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
                     dbres.passowrd = hashpwd
                 }
-                (dbres.username = username),
-                    (dbres.roles = roles),
-                    (dbres.active = active),
+                dbres.username = username,
+                dbres.roles = roles,
+                dbres.active = active,
                     dbres.save()
                         .then((updbres) => {
                             res
@@ -66,7 +68,7 @@ const updateUser = (req, res) => {
                             if (err.code === 11000) {
                                 res.status(409).json({ message: `duplicate username` });
                             } else {
-                                res.status(400).json({ message: `can't update user` });
+                                res.status(400).json({ message: `can't update user`,err});
                             }
 
                         });
@@ -77,16 +79,19 @@ const updateUser = (req, res) => {
     }
 };
 
-const deleteUser = (req, res) => {
+/* const deleteUser = (req, res) => {
     const { id } = req.body;
     if (!id) {
         res.status(400).json({ message: "Id field is required*" });
     } else {
-        Note.findById({ user: id })
+        Note.findOne({ user: id })
             .then((dbres) => {
+                console.log("success");
+                console.log(dbres);
                 res.status(400).json({ message: "user assigned to notes" });
             })
             .catch((err) => {
+                console.log(err);
                 User.findByIdAndDelete({ _id: id })
                     .then((dbres) => {
                         res.status(201).json({ message: "user deleted" });
@@ -96,6 +101,27 @@ const deleteUser = (req, res) => {
                     });
             });
     }
-};
+}; */
+const deleteUser=async(req,res)=>{
+    try {
+        const {id}= req.body
+        if(!id){
+            return res.status(400).json({ message: "Id field is required*" });
+        }
+        const notes= await Note.findOne({user:id})
+        if(notes){
+            return res.status(400).json({ message: "user assigned to notes" });
+        }
+        
+        const users= await User.findByIdAndDelete({_id:id})
+        if(users){
+         return   res.status(201).json({ message: "user deleted" });
+        }
+          
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
 
 module.exports = { getAllUsers, createNewUser, updateUser, deleteUser };

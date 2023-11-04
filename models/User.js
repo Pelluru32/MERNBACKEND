@@ -8,7 +8,7 @@ const userSchema=new Schema({
     active:{type:Boolean,default:true},
     roles:[{
         type: String,
-        default: "Employee"
+        default: "Mechanic"
     }],
 })
 

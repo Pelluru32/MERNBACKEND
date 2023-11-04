@@ -8,20 +8,21 @@ const User = require("../models/User")
 const getAllNotes = async (req, res) => {
     try {
         const notes = await Note.find()
+        
         if (notes) {
             const addUserNameTONotes = await Promise.all(notes.map(async (note) => {
-                const user = await User.findById({ _id: note.user })
+                const user = await User.findById({ _id: note.user }) 
                 return { ...note.toObject(), username: user.username }
             }))
-
+            
             res.status(201).send(addUserNameTONotes)
 
         } else {
-            res.status(400).json({ message: "No users found" })
+            res.status(400).json({ message: "No Notes found fur" })
         }
 
     } catch (error) {
-        res.status(400).json({ message: "No users found" })
+        res.status(400).json({ message: "No Notes found" })
     }
 
 }
