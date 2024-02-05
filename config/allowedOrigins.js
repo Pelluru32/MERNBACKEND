@@ -1,5 +1,6 @@
 
-var allowedOrigins = ['https://mern-task-rq43.onrender.com',"https://mern-task-rq43.onrender.com"]
+const allowedOrigins = [
+    'http://localhost:3000'
+]
 
-
-module.exports={allowedOrigins}
+module.exports = allowedOrigins
