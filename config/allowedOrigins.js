@@ -1,3 +1,5 @@
-var allowedOrigins = ['https://mechanicswebsite.onrender.com',"http://localhost:3000","http://localhost:3001"]
+
+var allowedOrigins = ['https://mechanicswebsite.onrender.com',"https://mern-task-rq43.onrender.com"]
+
 
 module.exports={allowedOrigins}
