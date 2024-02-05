@@ -1,3 +1,3 @@
-var allowedOrigins = ['https://mechanicswebsite.onrender.com',"https://main.dn1zqd8yueonh.amplifyapp.com"]
+var allowedOrigins = ['https://mechanicswebsite.onrender.com',"https://mern-task-rq43.onrender.com"]
 
 module.exports={allowedOrigins}
