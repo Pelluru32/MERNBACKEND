@@ -41,41 +41,28 @@ const createNewUser = (req, res) => {
     }
 };
 
-const updateUser = (req, res) => {
-    const { id, username, active, password, roles } = req.body;
-    
-    if (!username || !roles.length || !Array.isArray(roles) || !id || typeof active !== "boolean") {
-        res.status(400).json({ message: "All fields are required except password*" });
-    }
-    else {
-        let hashpwd
-        User.findById({ _id: id })
-            .then((dbres) => {
-                if (password) {
-                    hashpwd = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
-                    dbres.passowrd = hashpwd
-                }
-                dbres.username = username,
-                dbres.roles = roles,
-                dbres.active = active,
-                    dbres.save()
-                        .then((updbres) => {
-                            res
-                                .status(201)
-                                .json({ message: `${updbres.username} is updated to db` });
-                        })
-                        .catch((err) => {
-                            if (err.code === 11000) {
-                                res.status(409).json({ message: `duplicate username` });
-                            } else {
-                                res.status(400).json({ message: `can't update user`,err});
-                            }
+const updateUser = async(req, res) => {
+    const { username, password, roles, id, active } = req.body
 
-                        });
-            })
-            .catch((err) => {
-                res.status(400).json({ message: `Invalid details you sent` });
-            });
+    if (!username || !roles.length || typeof active !== "boolean" || !id) {
+        return res.status(403).json({ "message": "All fields are required" })
+    }
+    try {
+        let findMechanic = await User.findById({ _id: id })
+        findMechanic.username = username
+        findMechanic.roles = roles
+        findMechanic.active = active
+        if (password) {
+            findMechanic.password = await bcrypt.hash(password, 10)
+        }
+        await findMechanic.save()
+
+        res.status(200).json({ "message": ` Mechanic ${findMechanic.username} is updated` })
+    } catch (error) {
+        if (error.code === 11000) {
+            return res.status(409).json({ "message": "Username already exists, Can't update" });
+        }
+        res.status(500).json({ "message": "An error occurred while updating Mechanic. Please try again later." })
     }
 };
 
